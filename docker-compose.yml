@@ -1,0 +1,64 @@
+version: "3.4"
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: laravel
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+      DATA_SAVE_PATH: /data
+    healthcheck:
+      test: '/usr/bin/mysql --user=laravel --password=laravel --execute "SHOW DATABASES;"'
+      interval: 3s
+      timeout: 2s
+      retries: 5
+    volumes:
+      - auction-mysql-volume:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+
+  backend:
+    build:
+      context: ./
+      dockerfile: build/backend/Dockerfile
+      target: builder
+    depends_on:
+      - db
+    volumes:
+      - "./backend:/srv/app"
+    env_file: build/backend/.env.local
+    ports:
+      - 8040:80
+
+  phpunit:
+    build:
+      context: ./
+      dockerfile: build/backend/Dockerfile
+      target: builder
+    volumes:
+      - "./backend:/srv/app"
+
+  frontend:
+    build:
+      context: ./
+      dockerfile: build/frontend/Dockerfile
+    volumes:
+      - "./frontend:/srv/app"
+    ports:
+      - 3000:3000
+    depends_on:
+      - yarn
+    command: yarn run start
+
+  yarn:
+    image: node:carbon-jessie
+    volumes:
+      - "./frontend:/srv/app"
+    working_dir: /srv/app
+    command: yarn install
+
+volumes:
+  auction-mysql-volume:

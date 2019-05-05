@@ -1,0 +1,36 @@
+import { createSelector } from 'reselect';
+import { initialState } from './reducer';
+
+/**
+ * Direct selector to the videoFilter state domain
+ */
+
+const selectVideoFilterDomain = state => state.get('videoFilter', initialState);
+
+/**
+ * Other specific selectors
+ */
+
+/**
+ * Default selector used by VideoFilter
+ */
+
+const makeSelectVideoFilter = () =>
+  createSelector(selectVideoFilterDomain, substate => substate.toJS());
+
+const makeSelectOptions = () =>
+  createSelector(selectVideoFilterDomain, substate =>
+    substate
+      .toJS()
+      .options.filter(video => video.kind === 'youtube#video')
+      .map(video => ({
+        value: video.id,
+        label: video.title,
+      })),
+  );
+
+const makeSelectLoading = () =>
+  createSelector(selectVideoFilterDomain, substate => substate.toJS().loading);
+
+export default makeSelectVideoFilter;
+export { selectVideoFilterDomain, makeSelectOptions, makeSelectLoading };

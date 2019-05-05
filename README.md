@@ -1,1 +1,2 @@
-# video-player
+# youtube-player
+Youtube video player
