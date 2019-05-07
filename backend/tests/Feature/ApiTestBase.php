@@ -27,87 +27,30 @@ abstract class ApiTestBase extends TestCase
      * User email address
      * @var string
      */
-    protected $email = 'admin@auction.test';
-    protected $memberEmail = 'member@example.com';
-
-    /**
-     * User name
-     * @var string
-     */
-    protected $name = 'admin';
+    protected $email = 'admin@example.test';
 
     /**
      * User password
      * @var string
      */
-    protected $password = 'secret';
+    protected $password = 'password';
+
+    /**
+     * Token
+     * @var string
+     */
     protected $loggedToken;
-
-    protected function auth($name, $password)
-    {
-        $credential = ['name' => $name, 'password' => $password];
-        auth()->attempt($credential);
-        $this->loggedToken = JWTAuth::fromUser(auth()->user());
-    }
-
-    protected function createUser($attributes, $role, $memberAttributes = null): User
-    {
-        if ($memberAttributes) {
-            $member = factory(Member::class)->create($memberAttributes);
-            $attributes['member_id'] = $member->id;
-        }
-        $user = factory(User::class)->create($attributes);
-        $user->assignRole($role);
-        return $user;
-    }
 
     /**
      * Login test user.
      * @param string $name
      * @param integer $memberId
      */
-    protected function login($name = null, $memberId = null, $password = null)
+    protected function login($email = null, $password = null)
     {
-        $this->password = $password ?: $this->password;
-        $this->createUser([
-            'name' => $name ?: $this->name,
-            'email' => $this->memberEmail,
-            'password' => Hash::make($this->password),
-            'active' => 1,
-            'member_id' => $memberId,
-        ], 'AUTHENTICATED_USER');
-        $this->auth($name ?: $this->name, $this->password);
-    }
-
-    /**
-     * Login admin test user.
-     */
-    protected function loginAdmin()
-    {
-        $this->createUser([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => Hash::make($this->password),
-            'active' => 1,
-        ], 'SYSTEM_ADMINISTRATOR');
-        $this->auth($this->name, $this->password);
-    }
-
-    /**
-     * Login head of delegation test user.
-     */
-    protected function loginDelegation($delegation = null)
-    {
-        $this->createUser([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => Hash::make($this->password),
-            'active' => 1,
-            'delegation_id' => $delegation ?
-                $delegation->id :
-                factory(Delegation::class)->create(['member_code' => 'XX'])->id,
-        ], 'HEAD_OF_DELEGATION');
-        $this->auth($this->name, $this->password);
+        $credential = ['email' => $email ?? $this->email, 'password' => $password ?? $this->password];
+        auth()->attempt($credential);
+        $this->loggedToken = JWTAuth::fromUser(auth()->user());
     }
 
     /**

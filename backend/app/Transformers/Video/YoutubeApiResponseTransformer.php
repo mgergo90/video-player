@@ -3,7 +3,6 @@
 namespace App\Transformers\Video;
 
 use League\Fractal\TransformerAbstract;
-use Illuminate\Contracts\Support\Arrayable;
 use App\Transformers\TransformerInterface;
 
 class YoutubeApiResponseTransformer extends TransformerAbstract implements TransformerInterface

@@ -35,7 +35,7 @@ abstract class RepositoryAbstract
      *
      * @return Collection
      */
-    public function collect($filter, $sort)
+    public function collect($filter = [], $sort = [])
     {
         return $this->applyFilter($filter)->applySort($sort)->model->get();
     }

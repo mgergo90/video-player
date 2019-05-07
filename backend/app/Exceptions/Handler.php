@@ -4,6 +4,10 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,8 +33,11 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
+     *
+     * @param  \Exception $exception
      * @return void
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
@@ -46,6 +53,32 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if (method_exists($exception, 'getStatusCode')) {
+            return response()->json(['errors' => [
+                [
+                    'status' => (string)$exception->getStatusCode(),
+                    'source' => ['pointer' => 'data.attributes'],
+                    'detail' => $exception->getMessage(),
+                ]
+            ]], $exception->getStatusCode());
+        } elseif ($exception instanceof AuthorizationException) {
+            return response()->json(['errors' => [
+                [
+                    'status' => (string)JsonResponse::HTTP_UNAUTHORIZED,
+                    'source' => ['pointer' => 'data.attributes'],
+                    'detail' => $exception->getMessage(),
+                ]
+            ]], JsonResponse::HTTP_UNAUTHORIZED);
+        } elseif ($exception instanceof ModelNotFoundException) {
+            return response()->json(['errors' => [
+                [
+                    'status' => (string)JsonResponse::HTTP_NOT_FOUND,
+                    'source' => ['pointer' => 'data.attributes'],
+                    'detail' => 'Resource not found',
+                ]
+            ]], JsonResponse::HTTP_NOT_FOUND);
+        }
+
         return parent::render($request, $exception);
     }
 }

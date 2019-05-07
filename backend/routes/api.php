@@ -11,10 +11,9 @@ Route::namespace('YoutubeApi')
 
 Route::namespace('User')
     ->middleware(['api'])
-    ->prefix('user')
     ->group(function () {
         Route::resource('user', 'UserController')
-            ->only(['store', 'show']);
+            ->only(['store']);
     });
 
 Route::namespace('Auth')
@@ -26,4 +25,19 @@ Route::namespace('Auth')
         Route::post('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
         Route::post('me', 'AuthController@me');
+    });
+
+Route::namespace('PlayList')
+    ->middleware(['api', 'jwt'])
+    ->group(function () {
+        Route::resource('play-lists', 'PlayListController')
+            ->only(['store', 'update', 'index', 'destroy'])
+            ->parameters(['play-lists' => 'playList']);
+    });
+
+Route::namespace('Video')
+    ->middleware(['api', 'jwt'])
+    ->group(function () {
+        Route::resource('videos', 'VideoController')
+            ->only(['store', 'index', 'destroy']);
     });

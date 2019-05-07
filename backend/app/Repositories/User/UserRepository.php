@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\Hash;
 class UserRepository extends RepositoryAbstract
 {
     /**
-     * @var Youtube
-     */
-    protected $api;
-
-    /**
      * Define model name.
      *
      * @return string
