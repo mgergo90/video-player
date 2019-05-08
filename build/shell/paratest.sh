@@ -2,7 +2,7 @@
 
 if [[ ! $1 ]]
 then
-    docker-compose run --rm --user $(ls -lnd . | awk '{print $3}') phpunit vendor/bin/paratest --colors tests/
+    docker-compose exec --user $(ls -lnd . | awk '{print $3}') backend vendor/bin/paratest --colors tests/
 else
-    docker-compose run --rm --user $(ls -lnd . | awk '{print $3}') phpunit vendor/bin/paratest $@
+    docker-compose exec --user $(ls -lnd . | awk '{print $3}') backend vendor/bin/paratest $@
 fi

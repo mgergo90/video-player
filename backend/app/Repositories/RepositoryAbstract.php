@@ -129,7 +129,8 @@ abstract class RepositoryAbstract
      */
     public function store(array $data)
     {
-        return $this->model->create($data['data']['attributes']);
+        $this->model = $this->model->create($data['data']['attributes']);
+        return $this->model;
     }
 
     /**

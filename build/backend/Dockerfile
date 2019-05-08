@@ -5,6 +5,7 @@ WORKDIR /srv/app
 ENV APACHE_DOCUMENT_ROOT /srv/app/public
 
 COPY build/backend/vhost.conf /etc/apache2/sites-available/000-default.conf
+
 RUN apt-get update -yq \
         && apt-get install -yq libzip-dev zip libmemcached-dev zlib1g-dev \
         mc mysql-client supervisor libpng-dev libgd3 libgd-dev \

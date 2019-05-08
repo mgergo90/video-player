@@ -20,6 +20,14 @@ services:
   redis:
     image: redis:latest
 
+  websocket:
+    build:
+      context: ./
+      dockerfile: build/websocket/Dockerfile
+      target: production
+    environment:
+      LARAVEL_ECHO_SERVER_REDIS_HOST: redis
+
   backend:
     build:
       context: ./
@@ -29,17 +37,8 @@ services:
       - db
     volumes:
       - "./backend:/srv/app"
-    env_file: build/backend/.env.local
     ports:
       - 8040:80
-
-  phpunit:
-    build:
-      context: ./
-      dockerfile: build/backend/Dockerfile
-      target: builder
-    volumes:
-      - "./backend:/srv/app"
 
   frontend:
     build:

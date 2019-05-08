@@ -9,6 +9,7 @@ use App\Http\Requests\Video\VideoStoreRequest;
 use App\Http\Requests\Auth\LoggedinRequest;
 use App\Models\Video;
 use Illuminate\Http\JsonResponse;
+use App\Events\NewVideoEvent;
 
 class VideoController extends ApiBaseController
 {
@@ -43,7 +44,9 @@ class VideoController extends ApiBaseController
      */
     public function store(VideoStoreRequest $request)
     {
-        $this->repository->store($request->all());
+        $video = $this->repository->store($request->all());
+        $data = $this->transformer->transform($video);
+        broadcast(new NewVideoEvent($video, $data));
         return $this->null(JsonResponse::HTTP_CREATED);
     }
 
