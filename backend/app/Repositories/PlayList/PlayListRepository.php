@@ -4,16 +4,15 @@ namespace App\Repositories\PlayList;
 
 use App\Models\PlayList;
 use App\Repositories\RepositoryAbstract;
+use Illuminate\Database\Eloquent\Model;
 
-/**
- * Auction Repository
- */
 class PlayListRepository extends RepositoryAbstract
 {
     /**
      * Define model name.
      *
-     * @return string
+     * @param PlayList $model
+     * @return void
      */
     public function __construct(PlayList $model)
     {
@@ -22,10 +21,13 @@ class PlayListRepository extends RepositoryAbstract
 
     /**
      * Destroy playlist and all video in it.
+     *
+     * @param PlayList $model
+     * @return Playlist
      */
-    public function destroy($model)
+    public function destroy($model): Model
     {
         $model->videos()->delete();
-        parent::destroy($model);
+        return parent::destroy($model);
     }
 }

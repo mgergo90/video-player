@@ -6,8 +6,8 @@
 
 namespace App\Repositories;
 
-use Illuminate\Container\Container as App;
-use Illuminate\Database\Eloquent\Model as Model;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * Base Repository.
@@ -21,6 +21,8 @@ abstract class RepositoryAbstract
 
     /**
      * Create model.
+     *
+     * @param Model $model
      */
     public function __construct(Model $model)
     {
@@ -32,10 +34,9 @@ abstract class RepositoryAbstract
      *
      * @param array $filter
      * @param array $sort
-     *
      * @return Collection
      */
-    public function collect($filter = [], $sort = [])
+    public function collect($filter = [], $sort = []): Collection
     {
         return $this->applyFilter($filter)->applySort($sort)->model->get();
     }
@@ -49,7 +50,7 @@ abstract class RepositoryAbstract
      *
      * @return Collection
      */
-    public function paginate($filter, $sort, $page)
+    public function paginate($filter, $sort, $page): Collection
     {
         $paginated = $this->applyFilter($filter)
             ->applySort($sort)
@@ -66,11 +67,10 @@ abstract class RepositoryAbstract
      *
      * @param string $field
      * @param string $value
-     *
      * @return RepositoryAbstract
      * @SuppressWarnings(UnusedFormalParameter)
      */
-    protected function filter($field, $value)
+    protected function filter($field, $value): RepositoryAbstract
     {
         $this->model = $this->model->where($field, 'like', "%${value}%");
         return $this;
@@ -80,10 +80,9 @@ abstract class RepositoryAbstract
      * Apply filter options.
      *
      * @param array $filter
-     *
      * @return RepositoryAbstract
      */
-    protected function applyFilter($filter)
+    protected function applyFilter($filter): RepositoryAbstract
     {
         foreach ($filter as $field => $value) {
             $this->filter($field, $value);
@@ -96,10 +95,9 @@ abstract class RepositoryAbstract
      *
      * @param string $field
      * @param string $sort
-     *
      * @return RepositoryAbstract
      */
-    protected function sort($field, $sort)
+    protected function sort($field, $sort): RepositoryAbstract
     {
         $this->model = $this->model->orderBy($field, $sort);
         return $this;
@@ -109,10 +107,9 @@ abstract class RepositoryAbstract
      * Apply sort options.
      *
      * @param array $sort
-     *
      * @return RepositoryAbstract
      */
-    protected function applySort($sort)
+    protected function applySort($sort): RepositoryAbstract
     {
         foreach ($sort as $field => $order) {
             $this->sort($field, $order);
@@ -124,10 +121,9 @@ abstract class RepositoryAbstract
      * Store item in database.
      *
      * @param array $data
-     *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return Model
      */
-    public function store(array $data)
+    public function store(array $data): Model
     {
         $this->model = $this->model->create($data['data']['attributes']);
         return $this->model;
@@ -137,10 +133,10 @@ abstract class RepositoryAbstract
      * Store item in database.
      *
      * @param array $data
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @return \Illuminate\Database\Eloquent\Model
+     * @param Model $model
+     * @return Model
      */
-    public function update(array $data, $model)
+    public function update(array $data, $model): Model
     {
         $model->fill($data['data']['attributes'])->save();
         return $model;
@@ -149,10 +145,10 @@ abstract class RepositoryAbstract
     /**
      * Delete item from database.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     * @return \Illuminate\Database\Eloquent\Model
+     * @param Model $model
+     * @return Model
      */
-    public function destroy($model)
+    public function destroy($model): Model
     {
         $model->delete();
         return $model;

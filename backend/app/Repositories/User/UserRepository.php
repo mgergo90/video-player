@@ -5,6 +5,7 @@ namespace App\Repositories\User;
 use App\Models\User;
 use App\Repositories\RepositoryAbstract;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Auction Repository
@@ -14,7 +15,8 @@ class UserRepository extends RepositoryAbstract
     /**
      * Define model name.
      *
-     * @return string
+     * @param User $model
+     * @return void
      */
     public function __construct(User $model)
     {
@@ -25,10 +27,9 @@ class UserRepository extends RepositoryAbstract
      * Store new user in database.
      *
      * @param array $data
-     *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return User
      */
-    public function store(array $data)
+    public function store(array $data): Model
     {
         return parent::store($data + [
             'data' => [

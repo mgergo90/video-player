@@ -12,7 +12,7 @@ class DisplayPlayListTest extends ApiTestBase
 
     public function testListPlayLists()
     {
-        $user = factory(User::class)->create([
+        factory(User::class)->create([
             'email' => $this->email,
         ]);
         $this->login();

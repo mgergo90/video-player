@@ -5,6 +5,7 @@ namespace App\Repositories\Video;
 use Alaouy\Youtube\Youtube;
 use App\Repositories\RepositoryAbstract;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Collection;
 
 /**
  * Auction Repository
@@ -18,8 +19,6 @@ class YoutubeApiRepository extends RepositoryAbstract
 
     /**
      * Define model name.
-     *
-     * @return string
      */
     public function __construct()
     {
@@ -27,12 +26,12 @@ class YoutubeApiRepository extends RepositoryAbstract
     }
 
     /**
-     * Search for youtube videos.
+     * Search videos on youtube.
      *
      * @param array $data
-     * @return \App\Models\Auction
+     * @return Collection
      */
-    public function search(array $data)
+    public function search(array $data): Collection
     {
         $term = $data['filter']['term'];
         return Cache::remember(base64_encode($term), env('REDIS_TTL', 10), function () use ($term) {

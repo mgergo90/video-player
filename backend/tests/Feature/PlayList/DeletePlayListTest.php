@@ -28,7 +28,7 @@ class DeletePlayListTest extends ApiTestBase
 
     public function testOnlyOwnPlayListCanBeDestroyed()
     {
-        $user = factory(User::class)->create([
+        factory(User::class)->create([
             'email' => $this->email,
         ]);
         $this->login();
@@ -48,7 +48,7 @@ class DeletePlayListTest extends ApiTestBase
         $playList = factory(PlayList::class)->create([
             'user_id' => $user->id,
         ]);
-        $video = factory(Video::class)->create([
+        factory(Video::class)->create([
             'play_list_id' => $playList->id,
         ]);
 

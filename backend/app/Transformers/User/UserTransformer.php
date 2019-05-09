@@ -11,7 +11,7 @@ class UserTransformer extends TransformerAbstract implements TransformerInterfac
     /**
      * Transform object to array.
      *
-     * @param stdClass $response
+     * @param \App\Models\User $response
      * @return array
      */
     public function transform($response): array

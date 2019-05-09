@@ -13,7 +13,8 @@ class VideoRepository extends RepositoryAbstract
     /**
      * Define model name.
      *
-     * @return string
+     * @param Video $model
+     * @return viod
      */
     public function __construct(Video $model)
     {
