@@ -11,7 +11,7 @@ use App\Http\Requests\Video\YoutubeSearchRequest;
 class YoutubeApiController extends ApiBaseController
 {
     /**
-     *  Set repository and transformer.
+     * Set repository and transformer.
      *
      * @param YoutubeApiRepository $repository
      * @param YoutubeApiResponseTransformer $transformer
@@ -26,9 +26,9 @@ class YoutubeApiController extends ApiBaseController
      * Search on youtube.
      *
      * @param YoutubeSearchRequest $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function search(YoutubeSearchRequest $request)
+    public function search(YoutubeSearchRequest $request): Response
     {
         return $this->collection($this->repository->search($request->only('filter')));
     }

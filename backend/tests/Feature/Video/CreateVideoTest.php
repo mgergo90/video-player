@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\PlayList;
 use Tests\Feature\ApiTestBase;
 use Illuminate\Http\JsonResponse;
+use App\Events\NewVideoEvent;
 
 class CreateVideoTest extends ApiTestBase
 {

@@ -9,14 +9,15 @@ use App\Http\Requests\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Repositories\User\UserRepository;
 use App\Transformers\User\AuthUserTransformer;
+use Illuminate\Http\Response;
 
 class AuthController extends ApiBaseController
 {
     /**
-     *  Set repository and transformer.
+     * Set repository and transformer.
      *
-     * @param YoutubeApiRepository $repository
-     * @param YoutubeApiResponseTransformer $transformer
+     * @param UserRepository $repository
+     * @param AuthUserTransformer $transformer
      * @return void
      */
     public function __construct(UserRepository $repository, AuthUserTransformer $transformer)
@@ -28,10 +29,10 @@ class AuthController extends ApiBaseController
      * Return authenticated user.
      *
      * @param LoginRequest $request
-     * @return \Illuminate\Http\Response
-     * @SuppressWarnings("unused")
+     * @return Response
+     * @SuppressWarnings(UnusedFormalParameter)
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): Response
     {
         return $this->item(auth()->user());
     }
@@ -40,10 +41,10 @@ class AuthController extends ApiBaseController
      * Return current user.
      *
      * @param LoggedinRequest $request
-     * @return \Illuminate\Http\Response
-     * @SuppressWarnings("unused")
+     * @return Response
+     * @SuppressWarnings(UnusedFormalParameter)
      */
-    public function getUser(LoggedinRequest $request)
+    public function getUser(LoggedinRequest $request): Response
     {
         return $this->item(auth()->user());
     }
@@ -52,10 +53,10 @@ class AuthController extends ApiBaseController
      * Logout current user.
      *
      * @param LoggedinRequest $request
-     * @return \Illuminate\Http\Response
-     * @SuppressWarnings("unused")
+     * @return Response
+     * @SuppressWarnings(UnusedFormalParameter)
      */
-    public function logout(LoggedinRequest $request)
+    public function logout(LoggedinRequest $request): Response
     {
         auth()->logout();
         return $this->null();

@@ -25,11 +25,13 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_URL" value="http://localhost:8040"/>
+        <env name="BROADCAST_DRIVER" value="log"/>
         <env name="APP_KEY" value="base64:If79KfaUCcusPvXFiTSDTkZZiPVcW+/wH5D9UCrUyG8="/>
         <env name="JWT_SECRET" value="HlDkJRqrvJbigdcdTzxlZihNGcbJH8VXWRWb40a5XBNSPbalkrzySXD7PBgfKKC5"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="MAIL_DRIVER" value="array"/>
         <env name="DB_CONNECTION" value="sqlite_testing"/>
     </php>

@@ -10,12 +10,12 @@ use App\Http\Requests\PlayList\PlayListUpdateRequest;
 use App\Http\Requests\PlayList\PlayListDeleteRequest;
 use App\Http\Requests\Auth\LoggedinRequest;
 use App\Models\PlayList;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class PlayListController extends ApiBaseController
 {
     /**
-     *  Set repository and transformer.
+     * Set repository and transformer.
      *
      * @param PlayListRepository $repository
      * @param PlayListTransformer $transformer
@@ -30,9 +30,10 @@ class PlayListController extends ApiBaseController
      * List playlists.
      *
      * @param LoggedinRequest $request
-     * @return \Illuminate\Http\Response
+     * @return Response
+     * @SuppressWarnings(UnusedFormalParameter)
      */
-    public function index(LoggedinRequest $request)
+    public function index(LoggedinRequest $request): Response
     {
         return $this->collection($this->repository->collect());
     }
@@ -41,20 +42,20 @@ class PlayListController extends ApiBaseController
      * Create playlist.
      *
      * @param PlayListStoreRequest $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function store(PlayListStoreRequest $request)
+    public function store(PlayListStoreRequest $request): Response
     {
-        return $this->item($this->repository->store($request->all()), JsonResponse::HTTP_CREATED);
+        return $this->item($this->repository->store($request->all()), Response::HTTP_CREATED);
     }
 
     /**
      * Update playlist.
      *
      * @param PlayListUpdateRequest $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function update(PlayListUpdateRequest $request, PlayList $playList)
+    public function update(PlayListUpdateRequest $request, PlayList $playList): Response
     {
         return $this->item($this->repository->update($request->all(), $playList));
     }
@@ -63,9 +64,11 @@ class PlayListController extends ApiBaseController
      * Delete playlist.
      *
      * @param PlayListDeleteRequest $request
-     * @return \Illuminate\Http\Response
+     * @param Playlist $playList
+     * @return Response
+     * @SuppressWarnings(UnusedFormalParameter)
      */
-    public function destroy(PlayListDeleteRequest $request, PlayList $playList)
+    public function destroy(PlayListDeleteRequest $request, PlayList $playList): Response
     {
         $this->repository->destroy($playList);
         return $this->null();
