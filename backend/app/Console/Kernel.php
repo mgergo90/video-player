@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
      *
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
+     * @SuppressWarnings(UnusedFormalParameter)
      */
     protected function schedule(Schedule $schedule)
     {
