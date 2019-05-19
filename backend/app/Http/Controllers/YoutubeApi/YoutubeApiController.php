@@ -5,8 +5,8 @@ namespace App\Http\Controllers\YoutubeApi;
 use App\Http\Controllers\ApiBaseController;
 use App\Repositories\Video\YoutubeApiRepository;
 use App\Transformers\Video\YoutubeApiResponseTransformer;
-use App\Http\Requests\Request;
 use App\Http\Requests\Video\YoutubeSearchRequest;
+use Illuminate\Http\Response;
 
 class YoutubeApiController extends ApiBaseController
 {
@@ -30,6 +30,6 @@ class YoutubeApiController extends ApiBaseController
      */
     public function search(YoutubeSearchRequest $request): Response
     {
-        return $this->collection($this->repository->search($request->only('filter')));
+        return $this->collection($this->repository->search($request->only('filters')));
     }
 }

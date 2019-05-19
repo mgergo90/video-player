@@ -14,10 +14,10 @@ class YoutubeSearchRequest extends Request
     protected function addRules(): array
     {
         return [
-            'filter' => [
+            'filters' => [
                 'array',
             ],
-            'filter.term' => 'string|required',
+            'filters.term' => 'string|required',
         ];
     }
 }
