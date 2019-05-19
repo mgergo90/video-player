@@ -11,7 +11,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 import injectEpic from 'utils/injectEpic';
 import injectReducer from 'utils/injectReducer';
-import { makeSelectOptions, makeSelectLoading } from './selectors';
+import {
+  makeSelectOptions,
+  makeSelectLoading,
+  makeSelectTerm,
+} from './selectors';
 import reducer from './reducer';
 import { fetchYoutubeVideos } from './actions';
 import epic from './epic';
@@ -29,39 +33,35 @@ const styles = {
   },
 };
 
-const VideoFilter = ({ onInputChange, options, classes, loading }) => {
-  const [value, setValue] = useState('');
-  return (
-    <div className={classes.root}>
-      <AppBar position="static" color="default">
-        <Toolbar>
-          <Select
-            value={value}
-            onInputChange={event => {
-              onInputChange(event);
-              setValue(event);
-            }}
-            isLoading={loading}
-            placeholder="Search..."
-            options={options}
-            className={classes.filter}
-          />
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
-};
+const VideoFilter = ({ onInputChange, options, classes, loading, term }) => (
+  <div className={classes.root}>
+    <AppBar position="static" color="default">
+      <Toolbar>
+        <Select
+          inputValue={term}
+          onInputChange={onInputChange}
+          isLoading={loading}
+          placeholder="Search..."
+          options={options}
+          className={classes.filter}
+        />
+      </Toolbar>
+    </AppBar>
+  </div>
+);
 
 VideoFilter.propTypes = {
   onInputChange: PropTypes.func.isRequired,
   options: PropTypes.instanceOf(Array).isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
   loading: PropTypes.bool.isRequired,
+  term: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
   options: makeSelectOptions(),
   loading: makeSelectLoading(),
+  term: makeSelectTerm(),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -11,7 +11,7 @@ export const fetchYoutubeVideos = term => ({
   term,
 });
 
-export const setResultList = response => ({
+export const setResultList = options => ({
   type: SET_RESULT_LIST,
-  response,
+  options,
 });
