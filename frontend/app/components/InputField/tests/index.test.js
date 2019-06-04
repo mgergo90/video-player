@@ -1,11 +1,20 @@
-// import React from 'react';
-// import { mount } from 'enzyme';
-// import { enzymeFind } from 'styled-components/test-utils';
+import React from 'react';
+import { render } from 'enzyme';
 
-// import InputField from '../index';
+import InputField from '../index';
 
 describe('<InputField />', () => {
-  it('Expect to have unit tests specified', () => {
-    expect(true).toEqual(false);
+  it('should match snapshot', () => {
+    const field = render(
+      <InputField
+        classes={{ wrapper: '' }}
+        field={{ type: 'textfield' }}
+        form={{
+          errors: {},
+          touched: {},
+        }}
+      />,
+    );
+    expect(field).toMatchSnapShot();
   });
 });

@@ -1,3 +1,9 @@
+/**
+ *
+ * LoginPage
+ *
+ */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -15,8 +21,9 @@ import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import InputField from 'components/InputField';
-import { loginUser } from 'containers/App/actions';
+import globalMessages from 'containers/App/messages';
 import messages from './messages';
+import { postRegistrationForm } from './actions';
 
 const styles = {
   card: {
@@ -36,37 +43,63 @@ const styles = {
   },
 };
 
-const loginSchema = intl =>
+const registrationSchema = intl =>
   Yup.object().shape({
     email: Yup.string()
       .email(intl.formatMessage(messages.emailInvalid))
-      .required(intl.formatMessage(messages.required)),
-    password: Yup.string().required(intl.formatMessage(messages.required)),
+      .required(intl.formatMessage(globalMessages.required)),
+    name: Yup.string()
+      .required(intl.formatMessage(globalMessages.required))
+      .max(50, intl.formatMessage(globalMessages.maxLength, { number: 50 })),
+    password: Yup.string()
+      .required(intl.formatMessage(globalMessages.required))
+      .min(6, intl.formatMessage(globalMessages.minLength, { number: 6 }))
+      .max(50, intl.formatMessage(globalMessages.maxLength, { number: 50 })),
+    password_confirmation: Yup.string()
+      .oneOf(
+        [Yup.ref('password'), null],
+        intl.formatMessage(messages.passwordNotMatch),
+      )
+      .required(intl.formatMessage(globalMessages.required)),
   });
 
-const LoginForm = ({ login, classes, intl }) => (
+const RegistrationForm = ({ registration, classes, intl }) => (
   <Card className={classes.card}>
     <Formik
       initialValues={{
+        name: '',
         password: '',
+        password_confirmation: '',
         email: '',
       }}
-      onSubmit={login}
-      validationSchema={loginSchema(intl)}
+      onSubmit={registration}
+      validationSchema={registrationSchema(intl)}
       render={({ isSubmitting, status }) => (
         <Form>
           <CardContent>
             <Field
-              type="text"
+              type="input"
               name="email"
               component={InputField}
-              label={intl.formatMessage(messages.email)}
+              label={intl.formatMessage(globalMessages.email)}
+            />
+            <Field
+              type="input"
+              name="name"
+              component={InputField}
+              label={intl.formatMessage(globalMessages.name)}
             />
             <Field
               type="password"
               name="password"
               component={InputField}
-              label={intl.formatMessage(messages.password)}
+              label={intl.formatMessage(globalMessages.password)}
+            />
+            <Field
+              type="password"
+              name="password_confirmation"
+              component={InputField}
+              label={intl.formatMessage(globalMessages.confirmPassword)}
             />
             <FormHelperText error>
               {status && status.backendError}
@@ -78,9 +111,9 @@ const LoginForm = ({ login, classes, intl }) => (
               size="medium"
               color="primary"
               component={Link}
-              to="/registration"
+              to="/"
             >
-              {intl.formatMessage(messages.newAccountButton)}
+              Cancel
             </Button>
             <Button
               type="submit"
@@ -88,7 +121,7 @@ const LoginForm = ({ login, classes, intl }) => (
               variant="contained"
               color="primary"
             >
-              {intl.formatMessage(messages.loginButton)}
+              Submit
             </Button>
           </CardActions>
         </Form>
@@ -97,16 +130,16 @@ const LoginForm = ({ login, classes, intl }) => (
   </Card>
 );
 
-LoginForm.propTypes = {
+RegistrationForm.propTypes = {
   intl: intlShape.isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
-  login: PropTypes.func.isRequired,
+  registration: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
-  login: compose(
+  registration: compose(
     dispatch,
-    loginUser,
+    postRegistrationForm,
   ),
 });
 
@@ -118,4 +151,4 @@ const withConnect = connect(
 export default compose(
   withConnect,
   injectIntl,
-)(withStyles(styles)(LoginForm));
+)(withStyles(styles)(RegistrationForm));

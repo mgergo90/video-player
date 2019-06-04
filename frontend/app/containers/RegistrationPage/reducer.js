@@ -1,6 +1,6 @@
 /*
  *
- * LoginPage reducer
+ * RegistrationPage reducer
  *
  */
 
@@ -9,7 +9,7 @@ import { DEFAULT_ACTION } from './constants';
 
 export const initialState = fromJS({});
 
-function loginPageReducer(state = initialState, action) {
+function registrationPageReducer(state = initialState, action) {
   switch (action.type) {
     case DEFAULT_ACTION:
       return state;
@@ -18,4 +18,4 @@ function loginPageReducer(state = initialState, action) {
   }
 }
 
-export default loginPageReducer;
+export default registrationPageReducer;

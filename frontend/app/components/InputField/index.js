@@ -32,6 +32,10 @@ const InputField = ({
 InputField.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   field: PropTypes.instanceOf(Object).isRequired,
+  form: PropTypes.shape({
+    touched: PropTypes.instanceOf(Object),
+    errors: PropTypes.instanceOf(Object),
+  }),
 };
 
 export default withStyles(styles)(InputField);

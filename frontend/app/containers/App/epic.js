@@ -1,16 +1,57 @@
-import { mergeMap, map } from 'rxjs/operators';
-import { ofType } from 'redux-observable';
-import { ajax } from 'rxjs/ajax';
-import { FETCH_USER } from './constants';
+import { switchMap, map, catchError, tap, mapTo } from 'rxjs/operators';
+import { ofType, combineEpics } from 'redux-observable';
+import axios from 'axios';
+import { from, of } from 'rxjs';
+import { push } from 'connected-react-router';
 
-const appEpic = action$ =>
+import { setUserData } from 'containers/App/actions';
+import { LOGIN_USER, LOGIN_USER_ERROR, SET_USER_DATA } from './constants';
+
+const loginPage = action$ =>
   action$.pipe(
-    ofType(FETCH_USER),
-    mergeMap(action =>
-      ajax
-        .getJSON(`https://api.github.com/users/${action.user}`)
-        .pipe(map(response => console.log(response))),
+    ofType(LOGIN_USER),
+    map(action => ({
+      ...action,
+      credentials: {
+        data: {
+          attributes: action.credentials,
+        },
+      },
+    })),
+    switchMap(action =>
+      from(
+        axios({
+          method: 'POST',
+          url: 'http://localhost:8040/api/auth/login',
+          data: action.credentials,
+        }),
+      ).pipe(
+        map(response => response.data.data),
+        tap({
+          error: error => {
+            action.formActions.setStatus({ backendError: error.message });
+            action.formActions.setSubmitting(false);
+          },
+          next: user => {
+            action.formActions.setSubmitting(false);
+            localStorage.setItem('user', JSON.stringify(user));
+          },
+        }),
+        map(user => setUserData(user)),
+        catchError(error =>
+          of({
+            type: LOGIN_USER_ERROR,
+            error: error.message,
+          }),
+        ),
+      ),
     ),
   );
 
-export default appEpic;
+const redirectAfterLogin = $action =>
+  $action.pipe(
+    ofType(SET_USER_DATA),
+    mapTo(push('/')),
+  );
+
+export default combineEpics(loginPage, redirectAfterLogin);

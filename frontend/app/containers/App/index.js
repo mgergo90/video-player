@@ -23,6 +23,7 @@ Route.propTypes.component = PropTypes.oneOfType([
 
 const FilterPage = lazy(() => import('containers/FilterPage'));
 const LoginPage = lazy(() => import('containers/LoginPage'));
+const RegistrationPage = lazy(() => import('containers/RegistrationPage'));
 const NotFoundPage = lazy(() => import('containers/NotFoundPage'));
 
 const styles = () => ({
@@ -39,6 +40,7 @@ const App = ({ classes }) => (
         <Switch>
           <Route exact path="/" component={FilterPage} />
           <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/registration" component={RegistrationPage} />
           <Route path="" component={NotFoundPage} />
         </Switch>
       </div>
