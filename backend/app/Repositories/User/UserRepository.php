@@ -31,12 +31,8 @@ class UserRepository extends RepositoryAbstract
      */
     public function store(array $data): Model
     {
-        return parent::store($data + [
-            'data' => [
-                'attributes' => [
-                    'password' => Hash::make($data['data']['attributes']['password'])
-                ]
-            ]
-        ]);
+        $userData = $data;
+        $userData['data']['attributes']['password'] = Hash::make($data['data']['attributes']['password']);
+        return parent::store($userData);
     }
 }

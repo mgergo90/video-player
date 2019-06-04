@@ -27,7 +27,7 @@ class UserStoreRequest extends Request
                 ])
             ],
             'data.attributes.name' => 'required|string|max:255|unique:users,name',
-            'data.attributes.email' => 'required|email|max:255|unique:users,name',
+            'data.attributes.email' => 'required|email|max:255|unique:users,email',
             'data.attributes.password' => 'required|string|min:6|max:255|confirmed',
         ];
     }
