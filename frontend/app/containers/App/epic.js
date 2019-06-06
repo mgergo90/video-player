@@ -5,7 +5,7 @@ import { from, of } from 'rxjs';
 import { push } from 'connected-react-router';
 
 import { setUserData } from 'containers/App/actions';
-import { LOGIN_USER, LOGIN_USER_ERROR, SET_USER_DATA } from './constants';
+import { LOGIN_USER, SET_USER_DATA, LOGOUT_USER } from './constants';
 
 const loginPage = action$ =>
   action$.pipe(
@@ -22,36 +22,54 @@ const loginPage = action$ =>
       from(
         axios({
           method: 'POST',
-          url: 'http://localhost:8040/api/auth/login',
+          url: '/auth/login',
           data: action.credentials,
         }),
       ).pipe(
         map(response => response.data.data),
         tap({
-          error: error => {
-            action.formActions.setStatus({ backendError: error.message });
+          error: () => action.formActions.setSubmitting(false),
+          next: () => {
             action.formActions.setSubmitting(false);
-          },
-          next: user => {
-            action.formActions.setSubmitting(false);
-            localStorage.setItem('user', JSON.stringify(user));
           },
         }),
-        map(user => setUserData(user)),
+        map(setUserData),
         catchError(error =>
-          of({
-            type: LOGIN_USER_ERROR,
-            error: error.message,
-          }),
+          action.formActions.setStatus({ backendError: error.message }),
         ),
       ),
     ),
   );
 
-const redirectAfterLogin = $action =>
+const logoutUser = action$ =>
+  action$.pipe(
+    ofType(LOGOUT_USER),
+    switchMap(() =>
+      from(
+        axios({
+          method: 'GET',
+          url: '/auth/logout',
+        }),
+      ).pipe(
+        map(() => setUserData(null)),
+        catchError(() => of(setUserData(null))),
+      ),
+    ),
+  );
+
+const redirectAfterUserChange = $action =>
   $action.pipe(
     ofType(SET_USER_DATA),
+    tap(action => {
+      localStorage.setItem('user', JSON.stringify(action.user));
+      axios.defaults.headers.common.Authorization = null;
+      if (action.user) {
+        axios.defaults.headers.common.Authorization = `Bearer ${
+          action.user.attributes.access_token
+        }`;
+      }
+    }),
     mapTo(push('/')),
   );
 
-export default combineEpics(loginPage, redirectAfterLogin);
+export default combineEpics(loginPage, redirectAfterUserChange, logoutUser);

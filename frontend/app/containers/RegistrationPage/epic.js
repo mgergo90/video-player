@@ -21,7 +21,7 @@ const loginPage = action$ =>
       from(
         axios({
           method: 'POST',
-          url: 'http://localhost:8040/api/user',
+          url: '/api/user',
           data: action.userData,
         }),
       ).pipe(

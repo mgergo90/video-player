@@ -12,8 +12,12 @@ import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { withStyles } from '@material-ui/core/styles';
 import { Switch, Route } from 'react-router-dom';
+import { compose } from 'redux';
 
+import injectReducer from 'utils/injectReducer';
 import Loader from 'components/Loader';
+import Header from './header';
+import reducer from './reducer';
 
 // https://github.com/ReactTraining/react-router/issues/6420
 Route.propTypes.component = PropTypes.oneOfType([
@@ -29,6 +33,7 @@ const NotFoundPage = lazy(() => import('containers/NotFoundPage'));
 const styles = () => ({
   root: {
     display: 'flex',
+    flexDirection: 'column',
   },
 });
 
@@ -37,6 +42,7 @@ const App = ({ classes }) => (
     <Helmet titleTemplate="%s - Video Finder" defaultTitle="Video Finder" />
     <Suspense fallback={<Loader />}>
       <div className={classes.root}>
+        <Header />
         <Switch>
           <Route exact path="/" component={FilterPage} />
           <Route exact path="/login" component={LoginPage} />
@@ -52,4 +58,6 @@ App.propTypes = {
   classes: PropTypes.instanceOf(Object),
 };
 
-export default withStyles(styles)(App);
+const withReducer = injectReducer({ key: 'global', reducer });
+
+export default compose(withReducer)(withStyles(styles)(App));
