@@ -34,7 +34,8 @@ class AuthController extends ApiBaseController
      */
     public function login(LoginRequest $request): Response
     {
-        return $this->item(auth()->user());
+        return $this->item(auth()->user())
+            ->withCookie('token', auth()->getToken()->get(), config('jwt.ttl'), "/");
     }
 
     /**

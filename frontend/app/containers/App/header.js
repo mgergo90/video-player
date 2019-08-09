@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { createStructuredSelector } from 'reselect';
 import { makeSelectCurrentUser } from './selectors';
-import { logoutUser } from './actions';
+import { logoutUser, tryAuthenticate } from './actions';
 
 const styles = {
   root: {
@@ -19,26 +19,38 @@ const styles = {
   },
 };
 
-const Header = ({ classes, user, logout }) => (
-  <div className={classes.root}>
-    <AppBar position="static" color="default">
-      <Toolbar>
-        {user ? (
-          <Button onClick={logout}>Logout</Button>
-        ) : (
-          <Link to="/login">
-            <Button>Login</Button>
-          </Link>
-        )}
-      </Toolbar>
-    </AppBar>
-  </div>
-);
+const Header = props => {
+  useEffect(() => {
+    props.tryAuthenticate();
+  }, []);
+
+  if (props.initialize) {
+    return null;
+  }
+
+  return (
+    <div className={props.classes.root}>
+      <AppBar position="static" color="default">
+        <Toolbar>
+          {props.user ? (
+            <Button onClick={props.logout}>Logout</Button>
+          ) : (
+            <Link to="/login">
+              <Button>Login</Button>
+            </Link>
+          )}
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+};
 
 Header.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   user: PropTypes.instanceOf(Object),
   logout: PropTypes.func.isRequired,
+  tryAuthenticate: PropTypes.func.isRequired,
+  initialize: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -49,6 +61,10 @@ const mapDispatchToProps = dispatch => ({
   logout: compose(
     dispatch,
     logoutUser,
+  ),
+  tryAuthenticate: compose(
+    dispatch,
+    tryAuthenticate,
   ),
 });
 

@@ -14,7 +14,7 @@ class LoginRequest extends Request
     public function authorize(): bool
     {
         $credentials = $this->only('data.attributes.email', 'data.attributes.password')['data']['attributes'];
-        return auth()->attempt($credentials);
+        return auth()->claims(['csrf-token' => str_random(32)])->attempt($credentials);
     }
 
     /**

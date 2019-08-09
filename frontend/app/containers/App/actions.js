@@ -1,4 +1,9 @@
-import { SET_USER_DATA, LOGIN_USER, LOGOUT_USER } from './constants';
+import {
+  SET_USER_DATA,
+  LOGIN_USER,
+  LOGOUT_USER,
+  TRY_AUTHENTICATE,
+} from './constants';
 
 /**
  * Dispatched after successfull user login.
@@ -18,4 +23,8 @@ export const loginUser = (credentials, formActions) => ({
 
 export const logoutUser = () => ({
   type: LOGOUT_USER,
+});
+
+export const tryAuthenticate = () => ({
+  type: TRY_AUTHENTICATE,
 });

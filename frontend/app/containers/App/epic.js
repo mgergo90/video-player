@@ -1,11 +1,23 @@
-import { switchMap, map, catchError, tap, mapTo } from 'rxjs/operators';
+import {
+  switchMap,
+  map,
+  catchError,
+  tap,
+  mapTo,
+  ignoreElements,
+} from 'rxjs/operators';
 import { ofType, combineEpics } from 'redux-observable';
 import axios from 'axios';
 import { from, of } from 'rxjs';
 import { push } from 'connected-react-router';
 
 import { setUserData } from 'containers/App/actions';
-import { LOGIN_USER, SET_USER_DATA, LOGOUT_USER } from './constants';
+import {
+  LOGIN_USER,
+  SET_USER_DATA,
+  LOGOUT_USER,
+  TRY_AUTHENTICATE,
+} from './constants';
 
 const loginPage = action$ =>
   action$.pipe(
@@ -34,9 +46,10 @@ const loginPage = action$ =>
           },
         }),
         map(setUserData),
-        catchError(error =>
-          action.formActions.setStatus({ backendError: error.message }),
-        ),
+        catchError(error => {
+          action.formActions.setStatus({ backendError: error.message });
+          return of({ type: 'empty' });
+        }),
       ),
     ),
   );
@@ -61,15 +74,30 @@ const redirectAfterUserChange = $action =>
   $action.pipe(
     ofType(SET_USER_DATA),
     tap(action => {
-      localStorage.setItem('user', JSON.stringify(action.user));
-      axios.defaults.headers.common.Authorization = null;
+      axios.defaults.headers.common['CSRF-Token'] = null;
       if (action.user) {
-        axios.defaults.headers.common.Authorization = `Bearer ${
-          action.user.attributes.access_token
-        }`;
+        axios.defaults.headers.common['CSRF-Token'] =
+          action.user.attributes.csrf_token;
       }
     }),
-    mapTo(push('/')),
+    ignoreElements(),
   );
 
-export default combineEpics(loginPage, redirectAfterUserChange, logoutUser);
+const tryAuthenticate = $action =>
+  $action.pipe(
+    ofType(TRY_AUTHENTICATE),
+    switchMap(() =>
+      from(axios.get('/auth/me')).pipe(
+        map(response => response.data.data),
+        map(setUserData),
+        catchError(() => of({ type: 'empty' })),
+      ),
+    ),
+  );
+
+export default combineEpics(
+  loginPage,
+  redirectAfterUserChange,
+  logoutUser,
+  tryAuthenticate,
+);

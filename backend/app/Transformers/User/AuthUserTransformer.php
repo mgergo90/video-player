@@ -16,9 +16,7 @@ class AuthUserTransformer extends UserTransformer implements TransformerInterfac
     public function transform($user): array
     {
         $data = parent::transform($user);
-        $token = JWTAuth::fromUser($user);
-        $data['access_token'] = $token;
-        $data['token_type'] = 'bearer';
+        $data['csrf_token'] = auth()->payload()->get('csrf-token');
         return $data;
     }
 }
