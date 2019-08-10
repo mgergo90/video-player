@@ -6,7 +6,7 @@ import { from, of } from 'rxjs';
 import { loginUser } from 'containers/App/actions';
 import { POST_REGISTRATION_FORM, REGISTRATION_ERROR } from './constants';
 
-const loginPage = action$ =>
+const registerUser = action$ =>
   action$.pipe(
     ofType(POST_REGISTRATION_FORM),
     map(action => ({
@@ -21,7 +21,7 @@ const loginPage = action$ =>
       from(
         axios({
           method: 'POST',
-          url: '/api/user',
+          url: '/user',
           data: action.userData,
         }),
       ).pipe(
@@ -54,4 +54,4 @@ const loginPage = action$ =>
     ),
   );
 
-export default loginPage;
+export default registerUser;

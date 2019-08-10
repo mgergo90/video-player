@@ -6,9 +6,9 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { fromJS } from 'immutable';
 import { routerMiddleware } from 'connected-react-router/immutable';
 import createSagaMiddleware from 'redux-saga';
-import { createEpicMiddleware, combineEpics } from 'redux-observable';
+import { createEpicMiddleware, combineEpics, ofType } from 'redux-observable';
 import { BehaviorSubject } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 import createReducer from './reducers';
 import appEpic from './containers/App/epic';
 
@@ -49,17 +49,32 @@ export default function configureStore(initialState = {}, history) {
   store.runSaga = sagaMiddleware.run;
   store.injectedReducers = {}; // Reducer registry
   store.injectedSagas = {}; // Saga registry
+  store.injectedEpics = [];
   store.epics = new BehaviorSubject(combineEpics(appEpic));
-  const rootEpic = (action, state) =>
-    store.epics.pipe(mergeMap(epic => epic(action, state)));
 
-  epicMiddleware.run(rootEpic);
+  const hotReloadingEpic = (action$, ...rest) =>
+    store.epics.pipe(
+      mergeMap(epic =>
+        epic(action$, ...rest).pipe(
+          takeUntil(action$.pipe(ofType('HOT_RELOAD_EPIC'))),
+        ),
+      ),
+    );
+
+  epicMiddleware.run(hotReloadingEpic);
 
   // Make reducers hot reloadable, see http://mxs.is/googmo
   /* istanbul ignore next */
   if (module.hot) {
     module.hot.accept('./reducers', () => {
       store.replaceReducer(createReducer(store.injectedReducers));
+    });
+    module.hot.accept('./containers/App/epic', () => {
+      const nextRootEpic = require('./containers/App/epic').appEpic;
+      // First kill any running epics
+      store.dispatch({ type: 'HOT_RELOAD_EPIC' });
+      // Now setup the new one
+      store.epics.next(combineEpics(nextRootEpic));
     });
   }
 

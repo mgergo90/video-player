@@ -3,13 +3,11 @@ import {
   map,
   catchError,
   tap,
-  mapTo,
   ignoreElements,
 } from 'rxjs/operators';
 import { ofType, combineEpics } from 'redux-observable';
 import axios from 'axios';
 import { from, of } from 'rxjs';
-import { push } from 'connected-react-router';
 
 import { setUserData } from 'containers/App/actions';
 import {
@@ -90,7 +88,7 @@ const tryAuthenticate = $action =>
       from(axios.get('/auth/me')).pipe(
         map(response => response.data.data),
         map(setUserData),
-        catchError(() => of({ type: 'empty' })),
+        catchError(() => of(setUserData(null))),
       ),
     ),
   );

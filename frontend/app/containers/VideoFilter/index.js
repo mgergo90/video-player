@@ -77,7 +77,7 @@ const withConnect = connect(
 );
 
 const withReducer = injectReducer({ key: 'videoFilter', reducer });
-const withEpic = injectEpic(epic);
+const withEpic = injectEpic(epic, 'videoFilter');
 
 export default compose(
   withReducer,

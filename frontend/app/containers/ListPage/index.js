@@ -54,7 +54,7 @@ const withConnect = connect(
 );
 
 const withReducer = injectReducer({ key: 'listPage', reducer });
-const withEpic = injectEpic(epic);
+const withEpic = injectEpic(epic, 'listPage');
 
 export default compose(
   withReducer,

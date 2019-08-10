@@ -1,4 +1,4 @@
-import { conformsTo, isFunction, isObject } from 'lodash';
+import { conformsTo, isFunction, isObject, isArray } from 'lodash';
 import invariant from 'invariant';
 
 /**
@@ -14,6 +14,7 @@ export default function checkStore(store) {
     injectedReducers: isObject,
     injectedSagas: isObject,
     epics: isObject,
+    injectedEpics: isArray,
   };
   invariant(
     conformsTo(store, shape),

@@ -11,7 +11,7 @@ import React, { Suspense, lazy, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 import { withStyles } from '@material-ui/core/styles';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
@@ -29,7 +29,6 @@ Route.propTypes.component = PropTypes.oneOfType([
   PropTypes.object,
 ]);
 
-const FilterPage = lazy(() => import('containers/FilterPage'));
 const LoginPage = lazy(() => import('containers/LoginPage'));
 const RegistrationPage = lazy(() => import('containers/RegistrationPage'));
 const NotFoundPage = lazy(() => import('containers/NotFoundPage'));
@@ -74,7 +73,9 @@ const mapStateToProps = createStructuredSelector({
 
 const withConnect = connect(mapStateToProps);
 
-export default compose(
-  withReducer,
-  withConnect,
-)(withStyles(styles)(App));
+export default withRouter(
+  compose(
+    withReducer,
+    withConnect,
+  )(withStyles(styles)(App)),
+);

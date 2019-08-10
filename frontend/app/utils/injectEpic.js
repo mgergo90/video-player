@@ -9,7 +9,7 @@ import hoistNonReactStatics from 'hoist-non-react-statics';
  * @param {function} reducer A reducer that will be injected
  *
  */
-export default epic => WrappedComponent => {
+export default (epic, key) => WrappedComponent => {
   class EpicInjector extends React.Component {
     static WrappedComponent = WrappedComponent;
 
@@ -22,6 +22,14 @@ export default epic => WrappedComponent => {
       'Component'})`;
 
     componentWillMount() {
+      // we can't remove and add them later
+      if (this.context.store.injectedEpics.includes(key)) {
+        return;
+      }
+      this.context.store.injectedEpics = [
+        ...this.context.store.injectedEpics,
+        key,
+      ];
       this.context.store.epics.next(epic);
     }
 
