@@ -39,6 +39,18 @@ class PlayListController extends ApiBaseController
     }
 
     /**
+     * Show playlist.
+     *
+     * @param LoggedinRequest $request
+     * @return Response
+     * @SuppressWarnings(UnusedFormalParameter)
+     */
+    public function show(LoggedinRequest $request, PlayList $playList): Response
+    {
+        return $this->item($playList);
+    }
+
+    /**
      * Create playlist.
      *
      * @param PlayListStoreRequest $request

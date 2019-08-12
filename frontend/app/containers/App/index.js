@@ -50,6 +50,7 @@ const App = ({ classes, initialize }) => (
         {!initialize && (
           <Switch>
             <Route exact path="/" component={PlaylistPage} />
+            <Route path="/play-lists" component={PlaylistPage} />
             <Route exact path="/login" component={LoginPage} />
             <Route exact path="/registration" component={RegistrationPage} />
             <Route path="" component={NotFoundPage} />

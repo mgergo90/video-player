@@ -1,12 +1,33 @@
-import { switchMap, map, catchError } from 'rxjs/operators';
-import { ofType } from 'redux-observable';
-import { from, of } from 'rxjs';
+import {
+  switchMap,
+  map,
+  catchError,
+  tap,
+  mapTo,
+  withLatestFrom,
+} from 'rxjs/operators';
+import { ofType, combineEpics } from 'redux-observable';
+import { from, of, concat } from 'rxjs';
+import { push } from 'connected-react-router';
 import axios from 'axios';
+import { setWith, clone } from 'lodash';
 
-import { setPlaylists } from './actions';
-import { FETCH_PLAYLISTS } from './constants';
+import { makeSelectCurrentUserId } from 'containers/App/selectors';
+import { setPlaylists, setPlayListItem } from './actions';
+import {
+  FETCH_PLAYLISTS,
+  SAVE_PLAYLIST,
+  FETCH_PLAYLIST_ITEM,
+} from './constants';
 
-const videoFilter = action$ =>
+const getUrl = (baseUrl, id) => {
+  if (!id) {
+    return baseUrl;
+  }
+  return `${baseUrl}/${id}`;
+};
+
+const fetchPlayLists = action$ =>
   action$.pipe(
     ofType(FETCH_PLAYLISTS),
     switchMap(() =>
@@ -17,4 +38,58 @@ const videoFilter = action$ =>
     ),
   );
 
-export default videoFilter;
+const fetchPlayListItem = action$ =>
+  action$.pipe(
+    ofType(FETCH_PLAYLIST_ITEM),
+    switchMap(action =>
+      from(axios.get(getUrl('/play-lists', action.id))).pipe(
+        map(response => response.data.data),
+        map(setPlayListItem),
+        catchError(() => of({ type: 'empty' })),
+      ),
+    ),
+  );
+
+const savePlayList = (action$, state$) =>
+  action$.pipe(
+    ofType(SAVE_PLAYLIST),
+    withLatestFrom(state$),
+    map(([action, state]) => [
+      {
+        ...setWith(
+          clone(action),
+          'playlistData.attributes.user_id',
+          makeSelectCurrentUserId(state),
+          clone,
+        ),
+      },
+      state,
+    ]),
+    switchMap(([action]) =>
+      concat(
+        from(
+          axios({
+            method: action.playlistData.id ? 'PUT' : 'POST',
+            url: getUrl('/play-lists', action.playlistData.id),
+            data: { data: action.playlistData },
+          }),
+        ).pipe(
+          map(response => response.data.data),
+          tap({
+            error: () => action.formActions.setSubmitting(false),
+            next: () => {
+              action.formActions.setSubmitting(false);
+            },
+          }),
+          mapTo(push('/play-lists')),
+          catchError(error => {
+            action.formActions.setStatus({ backendError: error.message });
+            return of({ type: 'empty' });
+          }),
+        ),
+        of(setPlayListItem()),
+      ),
+    ),
+  );
+
+export default combineEpics(fetchPlayLists, savePlayList, fetchPlayListItem);

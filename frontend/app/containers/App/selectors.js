@@ -13,4 +13,9 @@ const selectInitialize = createSelector(selectGlobal, globalState =>
   globalState.get('initialize'),
 );
 
-export { makeSelectCurrentUser, selectInitialize };
+const makeSelectCurrentUserId = createSelector(
+  createSelector(selectGlobal, globalState => globalState.get('user')),
+  user => user.id,
+);
+
+export { makeSelectCurrentUser, selectInitialize, makeSelectCurrentUserId };

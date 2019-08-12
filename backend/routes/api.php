@@ -36,7 +36,7 @@ Route::middleware(['api'])
 
                 Route::namespace('PlayList')->group(function () {
                     Route::resource('play-lists', 'PlayListController')
-                        ->only(['store', 'update', 'index', 'destroy'])
+                        ->only(['store', 'update', 'index', 'destroy', 'show'])
                         ->parameters(['play-lists' => 'playList']);
                 });
 
