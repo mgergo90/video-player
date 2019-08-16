@@ -41,4 +41,5 @@ class YoutubeApiRepository extends RepositoryAbstract
                 ->all();
         });
     }
+
 }

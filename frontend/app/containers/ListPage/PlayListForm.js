@@ -18,7 +18,6 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import InputField from 'components/InputField';
 import globalMessages from 'containers/App/messages';
 import { savePlayList } from './actions';
-import messages from './messages';
 
 const styles = {
   card: {
@@ -40,8 +39,8 @@ const styles = {
 
 const playListSchema = intl =>
   Yup.object().shape({
-    attributes: Yup.object.shape({
-      name: Yup.string().required(globalMessages.required),
+    attributes: Yup.object().shape({
+      name: Yup.string().required(intl.formatMessage(globalMessages.required)),
     }),
   });
 
@@ -64,7 +63,7 @@ const PlayListForm = ({ playList, classes, intl, save, title }) => (
               type="text"
               name="attributes.name"
               component={InputField}
-              label={}
+              label={intl.formatMessage(globalMessages.name)}
             />
             <FormHelperText error>
               {status && status.backendError}
@@ -78,7 +77,7 @@ const PlayListForm = ({ playList, classes, intl, save, title }) => (
               component={Link}
               to="/play-lists"
             >
-              Cancel
+              {intl.formatMessage(globalMessages.cancel)}
             </Button>
             <Button
               type="submit"
@@ -86,7 +85,7 @@ const PlayListForm = ({ playList, classes, intl, save, title }) => (
               variant="contained"
               color="primary"
             >
-              Save
+              {intl.formatMessage(globalMessages.save)}
             </Button>
           </DialogActions>
         </Form>

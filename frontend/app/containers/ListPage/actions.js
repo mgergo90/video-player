@@ -10,6 +10,8 @@ import {
   SAVE_PLAYLIST,
   FETCH_PLAYLIST_ITEM,
   SET_PLAYLIST_ITEM,
+  FETCH_VIDEOS,
+  SET_VIDEOS_LIST,
 } from './constants';
 
 export const fetchPlayLists = () => ({
@@ -35,4 +37,14 @@ export const fetchPlayListItem = id => ({
 export const setPlayListItem = item => ({
   type: SET_PLAYLIST_ITEM,
   item,
+});
+
+export const fetchVideos = id => ({
+  type: FETCH_VIDEOS,
+  id,
+});
+
+export const setVideoList = videos => ({
+  type: SET_VIDEOS_LIST,
+  videos,
 });

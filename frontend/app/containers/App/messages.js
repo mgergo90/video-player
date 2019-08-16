@@ -37,4 +37,12 @@ export default defineMessages({
     id: `${scope}.maxLength`,
     defaultMessage: 'Can not be longer than {number} character',
   },
+  save: {
+    id: `${scope}.save`,
+    defaultMessage: 'Save',
+  },
+  cancel: {
+    id: `${scope}.cancel`,
+    defaultMessage: 'Cancel',
+  },
 });

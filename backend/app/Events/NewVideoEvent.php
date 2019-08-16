@@ -55,6 +55,6 @@ class NewVideoEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('playlist.' . $this->video->play_list_id);
+        return new Channel('playlist.' . $this->video->play_list_id);
     }
 }

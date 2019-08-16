@@ -17,7 +17,7 @@ import {
   makeSelectTerm,
 } from './selectors';
 import reducer from './reducer';
-import { fetchYoutubeVideos } from './actions';
+import { fetchYoutubeVideos, saveVideo } from './actions';
 import epic from './epic';
 import messages from './messages';
 
@@ -33,13 +33,22 @@ const styles = {
   },
 };
 
-const VideoFilter = ({ onInputChange, options, classes, loading, term }) => (
+const VideoFilter = ({
+  onInputChange,
+  options,
+  classes,
+  loading,
+  term,
+  postVideo,
+}) => (
   <div className={classes.root}>
     <AppBar position="static" color="default">
       <Toolbar>
         <Select
+          isClearable
           inputValue={term}
           onInputChange={onInputChange}
+          onChange={postVideo}
           isLoading={loading}
           placeholder="Search..."
           options={options}
@@ -52,6 +61,7 @@ const VideoFilter = ({ onInputChange, options, classes, loading, term }) => (
 
 VideoFilter.propTypes = {
   onInputChange: PropTypes.func.isRequired,
+  postVideo: PropTypes.func.isRequired,
   options: PropTypes.instanceOf(Array).isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
   loading: PropTypes.bool.isRequired,
@@ -68,6 +78,10 @@ const mapDispatchToProps = dispatch => ({
   onInputChange: compose(
     dispatch,
     fetchYoutubeVideos,
+  ),
+  postVideo: compose(
+    dispatch,
+    saveVideo,
   ),
 });
 

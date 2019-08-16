@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { select } from 'redux-saga/effects';
 import { initialState } from './reducer';
 
 /**
@@ -29,5 +28,10 @@ const selectItem = createSelector(
   substate => substate.toJS().playlistitem,
 );
 
+const selectVideos = createSelector(
+  selectListPageDomain,
+  substate => substate.toJS().videos,
+);
+
 export default makeSelectListPage;
-export { selectListPageDomain, selectLists, selectItem };
+export { selectListPageDomain, selectLists, selectItem, selectVideos };

@@ -12,5 +12,5 @@
 */
 
 Broadcast::channel('playlist.{playListId}', function ($user, $playListId) {
-    return (int) $user->id !== 0;
+    return true;
 });

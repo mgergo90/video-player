@@ -19,13 +19,12 @@ const makeSelectVideoFilter = () =>
   createSelector(selectVideoFilterDomain, substate => substate.toJS());
 
 const makeSelectOptions = () =>
-  createSelector(selectVideoFilterDomain, substate => {
-    console.log(substate.toJS());
-    return substate.toJS().options.map(video => ({
+  createSelector(selectVideoFilterDomain, substate =>
+    substate.toJS().options.map(video => ({
       value: video.id,
       label: video.attributes.title,
-    }));
-  });
+    })),
+  );
 
 const makeSelectLoading = () =>
   createSelector(selectVideoFilterDomain, substate => substate.toJS().loading);

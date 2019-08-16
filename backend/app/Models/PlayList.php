@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Video;
+use App\Scopes\UserScope;
 
 class PlayList extends Model
 {
@@ -14,6 +15,18 @@ class PlayList extends Model
      * @var array
      */
     protected $fillable = ['name', 'user_id'];
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(new UserScope);
+    }
 
     /**
      * Owner of the play list.

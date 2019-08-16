@@ -5,11 +5,12 @@
  */
 
 import { fromJS } from 'immutable';
-import { SET_PLAYLISTS, SET_PLAYLIST_ITEM } from './constants';
+import { SET_PLAYLISTS, SET_PLAYLIST_ITEM, SET_VIDEOS_LIST } from './constants';
 
 export const initialState = fromJS({
   playlists: [],
   playlistitem: null,
+  videos: [],
 });
 
 function listPageReducer(state = initialState, action) {
@@ -18,6 +19,8 @@ function listPageReducer(state = initialState, action) {
       return state.set('playlists', action.data);
     case SET_PLAYLIST_ITEM:
       return state.set('playlistitem', action.item);
+    case SET_VIDEOS_LIST:
+      return state.set('video', action.videos);
     default:
       return state;
   }

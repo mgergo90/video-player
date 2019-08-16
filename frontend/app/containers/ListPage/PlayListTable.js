@@ -61,15 +61,23 @@ const PlayListTable = props => {
         <TableHead>
           <TableRow>
             <TableCell className={classes.name}>Name</TableCell>
-            <TableCell>Edit</TableCell>
+            <TableCell>ACtion</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.lists.map(row => (
             <TableRow key={row.id}>
-              <TableCell>{row.attributes.name}</TableCell>
               <TableCell>
-                <Link to={`/play-lists/${row.id}`}>Edit</Link>
+                <Link to={`/play-lists/${row.id}`}>{row.attributes.name}</Link>
+              </TableCell>
+              <TableCell>
+                <Link to={`/play-lists/edit/${row.id}`}>
+                  <Tooltip title="Edit">
+                    <IconButton aria-label="edit">
+                      <Icon color="primary">edit</Icon>
+                    </IconButton>
+                  </Tooltip>
+                </Link>
               </TableCell>
             </TableRow>
           ))}

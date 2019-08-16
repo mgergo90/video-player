@@ -34,7 +34,7 @@ class VideoController extends ApiBaseController
      */
     public function index(LoggedinRequest $request): Response
     {
-        return $this->collection($this->repository->collect());
+        return $this->collection($this->repository->all());
     }
 
     /**

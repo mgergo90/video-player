@@ -13,11 +13,12 @@ import axios from 'axios';
 import { setWith, clone } from 'lodash';
 
 import { makeSelectCurrentUserId } from 'containers/App/selectors';
-import { setPlaylists, setPlayListItem } from './actions';
+import { setPlaylists, setPlayListItem, setVideoList } from './actions';
 import {
   FETCH_PLAYLISTS,
   SAVE_PLAYLIST,
   FETCH_PLAYLIST_ITEM,
+  FETCH_VIDEOS,
 } from './constants';
 
 const getUrl = (baseUrl, id) => {
@@ -92,4 +93,21 @@ const savePlayList = (action$, state$) =>
     ),
   );
 
-export default combineEpics(fetchPlayLists, savePlayList, fetchPlayListItem);
+const fetchVideos = action$ =>
+  action$.pipe(
+    ofType(FETCH_VIDEOS),
+    switchMap(action =>
+      from(axios.get(getUrl('/videos', null))).pipe(
+        map(response => response.data.data),
+        map(setVideoList),
+        catchError(() => of({ type: 'empty' })),
+      ),
+    ),
+  );
+
+export default combineEpics(
+  fetchPlayLists,
+  savePlayList,
+  fetchPlayListItem,
+  fetchVideos,
+);

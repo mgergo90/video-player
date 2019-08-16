@@ -21,12 +21,17 @@ services:
     image: redis:latest
 
   websocket:
-    build:
-      context: ./
-      dockerfile: build/websocket/Dockerfile
-      target: production
-    environment:
-      LARAVEL_ECHO_SERVER_REDIS_HOST: redis
+    # build:
+    #   context: ./
+    #   dockerfile: build/websocket/Dockerfile
+    #   target: production
+    # environment:
+    #   LARAVEL_ECHO_SERVER_REDIS_HOST: redis
+    # ports:
+    #   - 6001:6001
+    image: mintopia/laravel-echo-server:latest
+    ports:
+      - 6001:6001
 
   backend:
     build:
